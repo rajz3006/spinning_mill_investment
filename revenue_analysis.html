@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Analysis - Spinning Mill Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .navigation-bar {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .data-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .revenue-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .revenue-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #007bff;
+        }
+        
+        .revenue-card.yarn-revenue {
+            border-left-color: #007bff;
+        }
+        
+        .revenue-card.wastage-revenue {
+            border-left-color: #28a745;
+        }
+        
+        .revenue-card.total-revenue {
+            border-left-color: #dc3545;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .revenue-card h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .revenue-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .revenue-card .unit {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+        
+        .revenue-card .percentage {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .analysis-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .pricing-analysis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .price-metric {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .price-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .price-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .number {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .alert {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .error-alert {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .warning-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .revenue-breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .breakdown-chart {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .summary-row {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .revenue-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-analysis {
+                grid-template-columns: 1fr;
+            }
+            
+            .revenue-breakdown {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Revenue Analysis</h1>
+            <p>Monthly Revenue Breakdown & Sales Projections</p>
+        </div>
+        
+        <div class="navigation-bar">
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+            <div class="data-status">
+                <span class="status-indicator" id="dataStatus"></span>
+                <span id="dataStatusText">Data Connected</span>
+            </div>
+            <button class="back-btn export-btn" onclick="exportToCSV()">📊 Export Revenue Data</button>
+        </div>
+        
+        <div class="main-content">
+            <div id="alertContainer"></div>
+            
+            <div class="revenue-summary">
+                <div class="revenue-card yarn-revenue">
+                    <h4>💰 Monthly Yarn Revenue</h4>
+                    <div class="value" id="yarnRevenue">₹0<span class="unit">Lakhs</span></div>
+                    <div class="percentage" id="yarnPercentage">0% of total revenue</div>
+                </div>
+                <div class="revenue-card wastage-revenue">
+                    <h4>♻️ Monthly Wastage Revenue</h4>
+                    <div class="value" id="wastageRevenue">₹0<span class="unit">Lakhs</span></div>
+                    <div class="percentage" id="wastagePercentage">0% of total revenue</div>
+                </div>
+                <div class="revenue-card total-revenue">
+                    <h4>📈 Total Monthly Revenue</h4>
+                    <div class="value" id="totalRevenue">₹0<span class="unit">Lakhs</span></div>
+                    <div class="percentage" id="totalProduction">0 MT Monthly Production</div>
+                </div>
+            </div>
+
+            <div class="analysis-section">
+                <h3>💰 Pricing Analysis</h3>
+                <div class="pricing-analysis">
+                    <div class="price-metric">
+                        <div class="price-value" id="yarnPrice">₹0</div>
+                        <div class="price-label">Yarn Price per KG</div>
+                    </div>
+                    <div class="price-metric">
+                        <div class="price-value" id="wastagePrice">₹0</div>
+                        <div class="price-label">Wastage Rate per KG</div>
+                    </div>
+                    <div class="price-metric">
+                        <div class="price-value" id="revenuePerKg">₹0</div>
+                        <div class="price-label">Total Revenue per KG</div>
+                    </div>
+                    <div class="price-metric">
+                        <div class="price-value" id="annualRevenue">₹0</div>
+                        <div class="price-label">Annual Revenue (Crores)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-section">
+                <h3>📊 24-Month Revenue Projections</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th>Production (MT)</th>
+                                <th>Yarn Price (₹/kg)</th>
+                                <th>Yarn Revenue (₹ Lakhs)</th>
+                                <th>Wastage Revenue (₹ Lakhs)</th>
+                                <th>Total Revenue (₹ Lakhs)</th>
+                                <th>Cumulative Revenue (₹ Lakhs)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="revenueTable">
+                        </tbody>
+                        <tfoot>
+                            <tr class="summary-row">
+                                <td colspan="2"><strong>24-Month Totals</strong></td>
+                                <td class="number" id="totalProduction24">0 MT</td>
+                                <td class="number">-</td>
+                                <td class="number" id="totalYarnRevenue24">₹0</td>
+                                <td class="number" id="totalWastageRevenue24">₹0</td>
+                                <td class="number" id="grandTotalRevenue24">₹0</td>
+                                <td class="number">-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analysis-section">
+                <h3>📈 Revenue Analysis Insights</h3>
+                <div class="revenue-breakdown">
+                    <div class="breakdown-chart">
+                        <h4>Revenue Composition</h4>
+                        <div class="chart-placeholder">
+                            Yarn vs Wastage Revenue Chart
+                            <br><small>(Ready for Chart.js integration)</small>
+                        </div>
+                    </div>
+                    <div class="breakdown-chart">
+                        <h4>Monthly Revenue Trend</h4>
+                        <div class="chart-placeholder">
+                            24-Month Revenue Growth Chart
+                            <br><small>(Ready for Chart.js integration)</small>
+                        </div>
+                    </div>
+                </div>
+                <div id="revenueInsights" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global project data
+        let projectData = {};
+
+        // Load project data from localStorage
+        function loadProjectData() {
+            const savedData = localStorage.getItem('spinningMillProjectData');
+            if (savedData) {
+                projectData = JSON.parse(savedData);
+                document.getElementById('dataStatus').style.background = '#28a745';
+                document.getElementById('dataStatusText').textContent = 'Data Connected';
+                return true;
+            } else {
+                document.getElementById('dataStatus').style.background = '#dc3545';
+                document.getElementById('dataStatusText').textContent = 'No Data Found';
+                showAlert('No project assumptions found. Please set up your project assumptions first.', 'error');
+                return false;
+            }
+        }
+
+        // Show alert messages
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            let alertClass = '';
+            if (type === 'error') alertClass = 'error-alert';
+            else if (type === 'warning') alertClass = 'warning-alert';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+        }
+
+        // Calculate monthly production
+        function calculateMonthlyProduction() {
+            return (projectData.dailyProduction * projectData.operatingDays) / 1000; // Convert to MT
+        }
+
+        // Calculate monthly revenue with price escalation
+        function calculateMonthlyRevenue(month) {
+            const yearFactor = Math.floor((month - 1) / 12);
+            const escalatedYarnPrice = projectData.yarnPrice * Math.pow(1 + projectData.priceEscalation / 100, yearFactor);
+            const escalatedWastagePrice = projectData.wastagePrice * Math.pow(1 + projectData.priceEscalation / 100, yearFactor);
+            
+            const monthlyProductionKg = projectData.dailyProduction * projectData.operatingDays;
+            const monthlyProductionMT = monthlyProductionKg / 1000;
+            
+            // Yarn revenue
+            const yarnRevenue = (monthlyProductionKg * escalatedYarnPrice) / 100000; // Convert to lakhs
+            
+            // Wastage revenue (₹24 per kg of total production)
+            const wastageRevenue = (monthlyProductionKg * escalatedWastagePrice) / 100000; // Convert to lakhs
+            
+            return {
+                production: monthlyProductionMT,
+                yarnPrice: escalatedYarnPrice,
+                yarnRevenue: yarnRevenue,
+                wastageRevenue: wastageRevenue,
+                totalRevenue: yarnRevenue + wastageRevenue
+            };
+        }
+
+        // Update revenue summary cards
+        function updateRevenueSummary() {
+            const monthlyData = calculateMonthlyRevenue(1); // Use Month 1 data for summary
+            
+            document.getElementById('yarnRevenue').innerHTML = `₹${monthlyData.yarnRevenue.toFixed(2)}<span class="unit">Lakhs</span>`;
+            document.getElementById('wastageRevenue').innerHTML = `₹${monthlyData.wastageRevenue.toFixed(2)}<span class="unit">Lakhs</span>`;
+            document.getElementById('totalRevenue').innerHTML = `₹${monthlyData.totalRevenue.toFixed(2)}<span class="unit">Lakhs</span>`;
+            
+            const yarnPercentage = (monthlyData.yarnRevenue / monthlyData.totalRevenue * 100).toFixed(1);
+            const wastagePercentage = (monthlyData.wastageRevenue / monthlyData.totalRevenue * 100).toFixed(1);
+            
+            document.getElementById('yarnPercentage').textContent = `${yarnPercentage}% of total revenue`;
+            document.getElementById('wastagePercentage').textContent = `${wastagePercentage}% of total revenue`;
+            document.getElementById('totalProduction').textContent = `${monthlyData.production.toFixed(1)} MT Monthly Production`;
+        }
+
+        // Update pricing analysis
+        function updatePricingAnalysis() {
+            const monthlyData = calculateMonthlyRevenue(1);
+            const revenuePerKg = monthlyData.totalRevenue * 100000 / (projectData.dailyProduction * projectData.operatingDays);
+            const annualRevenue = monthlyData.totalRevenue * 12 / 100; // Convert to crores
+            
+            document.getElementById('yarnPrice').textContent = `₹${projectData.yarnPrice}`;
+            document.getElementById('wastagePrice').textContent = `₹${projectData.wastagePrice}`;
+            document.getElementById('revenuePerKg').textContent = `₹${revenuePerKg.toFixed(2)}`;
+            document.getElementById('annualRevenue').textContent = `₹${annualRevenue.toFixed(2)}`;
+        }
+
+        // Generate revenue table
+        function generateRevenueTable() {
+            const tableBody = document.getElementById('revenueTable');
+            tableBody.innerHTML = '';
+            
+            let cumulativeRevenue = 0;
+            let totalProduction = 0;
+            let totalYarnRevenue = 0;
+            let totalWastageRevenue = 0;
+            let totalRevenue = 0;
+            
+            for (let month = 1; month <= 24; month++) {
+                const yearNum = Math.floor((month - 1) / 12) + 1;
+                const monthInYear = ((month - 1) % 12) + 1;
+                const monthlyData = calculateMonthlyRevenue(month);
+                
+                cumulativeRevenue += monthlyData.totalRevenue;
+                totalProduction += monthlyData.production;
+                totalYarnRevenue += monthlyData.yarnRevenue;
+                totalWastageRevenue += monthlyData.wastageRevenue;
+                totalRevenue += monthlyData.totalRevenue;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${yearNum}</td>
+                    <td>${monthInYear}</td>
+                    <td class="number">${monthlyData.production.toFixed(1)}</td>
+                    <td class="number">₹${monthlyData.yarnPrice.toFixed(0)}</td>
+                    <td class="number">₹${monthlyData.yarnRevenue.toFixed(2)}</td>
+                    <td class="number">₹${monthlyData.wastageRevenue.toFixed(2)}</td>
+                    <td class="number">₹${monthlyData.totalRevenue.toFixed(2)}</td>
+                    <td class="number">₹${cumulativeRevenue.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+            
+            // Update summary totals
+            document.getElementById('totalProduction24').textContent = `${totalProduction.toFixed(1)} MT`;
+            document.getElementById('totalYarnRevenue24').textContent = `₹${totalYarnRevenue.toFixed(2)}`;
+            document.getElementById('totalWastageRevenue24').textContent = `₹${totalWastageRevenue.toFixed(2)}`;
+            document.getElementById('grandTotalRevenue24').textContent = `₹${totalRevenue.toFixed(2)}`;
+        }
+
+        // Generate revenue insights
+        function generateRevenueInsights() {
+            const monthlyData = calculateMonthlyRevenue(1);
+            const month24Data = calculateMonthlyRevenue(24);
+            const yarnContribution = (monthlyData.yarnRevenue / monthlyData.totalRevenue * 100).toFixed(1);
+            const wastageContribution = (monthlyData.wastageRevenue / monthlyData.totalRevenue * 100).toFixed(1);
+            const priceGrowth = ((month24Data.yarnPrice - projectData.yarnPrice) / projectData.yarnPrice * 100).toFixed(1);
+            
+            const insights = `
+                <h4>📊 Key Revenue Insights:</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+                        <strong>Yarn Revenue Dominance</strong><br>
+                        <span style="color: #6c757d;">Yarn sales contribute ${yarnContribution}% of total revenue, making it the primary revenue driver.</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <strong>Wastage Revenue Contribution</strong><br>
+                        <span style="color: #6c757d;">Wastage processing adds ${wastageContribution}% additional revenue (₹${monthlyData.wastageRevenue.toFixed(2)} lakhs/month).</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <strong>Price Escalation Impact</strong><br>
+                        <span style="color: #6c757d;">With ${projectData.priceEscalation}% annual escalation, prices grow ${priceGrowth}% over 24 months.</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+                        <strong>Revenue per KG</strong><br>
+                        <span style="color: #6c757d;">Combined revenue of ₹${(monthlyData.totalRevenue * 100000 / (projectData.dailyProduction * projectData.operatingDays)).toFixed(2)} per kg produced.</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('revenueInsights').innerHTML = insights;
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            let csv = [];
+            
+            // Add title and metadata
+            csv.push(['Spinning Mill Project - Revenue Analysis']);
+            csv.push(['Generated on: ' + new Date().toLocaleString()]);
+            csv.push(['']);
+            
+            // Add summary data
+            const monthlyData = calculateMonthlyRevenue(1);
+            csv.push(['Revenue Summary']);
+            csv.push(['Monthly Yarn Revenue (Lakhs)', monthlyData.yarnRevenue.toFixed(2)]);
+            csv.push(['Monthly Wastage Revenue (Lakhs)', monthlyData.wastageRevenue.toFixed(2)]);
+            csv.push(['Total Monthly Revenue (Lakhs)', monthlyData.totalRevenue.toFixed(2)]);
+            csv.push(['']);
+            
+            // Add table headers
+            csv.push(['Year', 'Month', 'Production (MT)', 'Yarn Price (₹/kg)', 'Yarn Revenue (₹ Lakhs)', 'Wastage Revenue (₹ Lakhs)', 'Total Revenue (₹ Lakhs)', 'Cumulative Revenue (₹ Lakhs)']);
+            
+            // Add table data
+            let cumulativeRevenue = 0;
+            for (let month = 1; month <= 24; month++) {
+                const yearNum = Math.floor((month - 1) / 12) + 1;
+                const monthInYear = ((month - 1) % 12) + 1;
+                const monthlyData = calculateMonthlyRevenue(month);
+                cumulativeRevenue += monthlyData.totalRevenue;
+                
+                csv.push([
+                    yearNum,
+                    monthInYear,
+                    monthlyData.production.toFixed(1),
+                    monthlyData.yarnPrice.toFixed(0),
+                    monthlyData.yarnRevenue.toFixed(2),
+                    monthlyData.wastageRevenue.toFixed(2),
+                    monthlyData.totalRevenue.toFixed(2),
+                    cumulativeRevenue.toFixed(2)
+                ]);
+            }
+            
+            // Download CSV
+            const csvContent = csv.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `revenue_analysis_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (loadProjectData()) {
+                updateRevenueSummary();
+                updatePricingAnalysis();
+                generateRevenueTable();
+                generateRevenueInsights();
+                showAlert('✅ Revenue analysis loaded successfully with your project assumptions.', 'info');
+            } else {
+                // Show placeholder data for demonstration
+                showAlert('⚠️ Please set up project assumptions first. Using default values for demonstration.', 'error');
+                // Load default values for demonstration
+                projectData = {
+                    dailyProduction: 3300,
+                    operatingDays: 30,
+                    yarnPrice: 310,
+                    wastagePrice: 24,
+                    priceEscalation: 3
+                };
+                updateRevenueSummary();
+                updatePricingAnalysis();
+                generateRevenueTable();
+                generateRevenueInsights();
+            }
+        });
+    </script>
+</body>
+</html>

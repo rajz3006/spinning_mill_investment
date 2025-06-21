@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spinning Mill Project - Assumptions Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .nav-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            border-left: 5px solid #007bff;
+            cursor: pointer;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            color: #007bff;
+        }
+        
+        .nav-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-card p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .input-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .input-unit {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .calculated-field {
+            background: #e3f2fd;
+            border: 2px solid #bbdefb;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .status-card h4 {
+            margin-bottom: 10px;
+        }
+        
+        .cost-breakdown {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .cost-item:last-child {
+            border-bottom: 2px solid #007bff;
+            font-weight: 600;
+            color: #007bff;
+        }
+        
+        .cost-label {
+            font-weight: 500;
+        }
+        
+        .cost-value {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Spinning Mill Project Financial Model</h1>
+            <p>Production-Based Analysis with Working Capital Management</p>
+        </div>
+        
+        <div class="navigation">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">📊 Navigate to Analysis Pages</h3>
+            <div class="nav-grid">
+                <div class="nav-card" onclick="navigateToPage('timeline')">
+                    <h3>📅 24-Month Timeline</h3>
+                    <p>Production schedule and cash flow milestones</p>
+                </div>
+                <div class="nav-card" onclick="navigateToPage('revenue')">
+                    <h3>💰 Revenue Model</h3>
+                    <p>Monthly revenue projections and sales analysis</p>
+                </div>
+                <div class="nav-card" onclick="navigateToPage('costs')">
+                    <h3>📊 Cost Analysis</h3>
+                    <p>Detailed operating costs and expense breakdown</p>
+                </div>
+                <div class="nav-card" onclick="navigateToPage('financing')">
+                    <h3>🏦 Financing & Cash Flow</h3>
+                    <p>Working capital management and cash analysis</p>
+                </div>
+                <div class="nav-card" onclick="navigateToPage('dashboard')">
+                    <h3>🎯 Executive Dashboard</h3>
+                    <p>Key performance indicators and summary metrics</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="alertContainer"></div>
+            
+            <div class="status-card">
+                <h4>✅ Data Connectivity Status</h4>
+                <p>All analysis pages will automatically use the assumptions entered below</p>
+            </div>
+            
+            <div class="input-section">
+                <h3>🏭 Mill Production Specifications</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Total Daily Production (kg/day)</label>
+                        <input type="number" id="dailyProduction" value="3300" onchange="calculateDependentValues()">
+                        <div class="input-unit">Target yarn production at 100% capacity</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Cotton to Yarn Conversion Ratio</label>
+                        <input type="number" id="conversionRatio" value="0.69" step="0.01" onchange="calculateDependentValues()">
+                        <div class="input-unit">Yarn efficiency from cotton (default 69%)</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Operating Days per Month</label>
+                        <input type="number" id="operatingDays" value="30" step="0.5" onchange="calculateDependentValues()">
+                        <div class="input-unit">Working days per month</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Daily Cotton Requirement (kg)</label>
+                        <input type="number" id="dailyCottonReq" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated based on conversion ratio</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Cotton Candys Required</label>
+                        <input type="number" id="monthlyCandys" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated (1 candy = 356 kg cotton)</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Yarn Production (MT)</label>
+                        <input type="number" id="monthlyYarnProduction" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated total monthly output</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <h3>💰 Pricing & Raw Material Costs</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Yarn Selling Price (₹/kg)</label>
+                        <input type="number" id="yarnPrice" value="310" onchange="calculateDependentValues()">
+                        <div class="input-unit">61s CcW market price per kg</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Cotton Cost (₹/candy)</label>
+                        <input type="number" id="cottonCostPerCandy" value="55000" onchange="calculateDependentValues()">
+                        <div class="input-unit">Raw cotton purchase price per candy</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Wastage Revenue Rate (₹/kg)</label>
+                        <input type="number" id="wastagePrice" value="24" onchange="calculateDependentValues()">
+                        <div class="input-unit">Revenue per kg of total production</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Annual Price Escalation (%)</label>
+                        <input type="number" id="priceEscalation" value="3" onchange="calculateDependentValues()">
+                        <div class="input-unit">Yearly price increase percentage</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Cotton Cost (₹ Lakhs)</label>
+                        <input type="number" id="monthlyCottonCost" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated from candys × price</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Yarn Revenue (₹ Lakhs)</label>
+                        <input type="number" id="monthlyYarnRevenue" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated from yarn production × price</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Wastage Revenue (₹ Lakhs)</label>
+                        <input type="number" id="monthlyWastageRevenue" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated from total production × rate</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Total Monthly Revenue (₹ Lakhs)</label>
+                        <input type="number" id="monthlyRevenue" class="calculated-field" readonly>
+                        <div class="input-unit">Yarn revenue + wastage revenue</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <h3>🏦 Initial Investment & Working Capital</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Initial Investment (₹ Crores)</label>
+                        <input type="number" id="initialInvestment" value="6.00" step="0.01" onchange="calculateDependentValues()">
+                        <div class="input-unit">Acquisition cost for raw materials + first month expenses</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Investment Interest Rate (%)</label>
+                        <input type="number" id="investmentInterestRate" value="9.0" step="0.1" onchange="calculateDependentValues()">
+                        <div class="input-unit">Annual interest rate on investment amount</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Loan Tenure (Years)</label>
+                        <input type="number" id="loanTenure" value="15" onchange="calculateDependentValues()">
+                        <div class="input-unit">EMI repayment period</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Investment Interest (₹ Lakhs)</label>
+                        <input type="number" id="monthlyInvestmentInterest" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated monthly interest burden</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <h3>💼 Monthly Operating Costs Breakdown</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Monthly Loan EMI (₹ Lakhs)</label>
+                        <input type="number" id="loanEMI" value="38.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Principal + Interest payment</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Salaries (₹ Lakhs)</label>
+                        <input type="number" id="salaries" value="20.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Employee wages and benefits</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Power (₹ Lakhs)</label>
+                        <input type="number" id="power" value="38.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Electricity and utilities</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Packing (₹ Lakhs)</label>
+                        <input type="number" id="packing" value="4.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Packaging materials and costs</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Stores (₹ Lakhs)</label>
+                        <input type="number" id="stores" value="5.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Maintenance and store supplies</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Admin (₹ Lakhs)</label>
+                        <input type="number" id="admin" value="2.00" onchange="calculateDependentValues()">
+                        <div class="input-unit">Administrative expenses</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Canteen (₹ Lakhs)</label>
+                        <input type="number" id="canteen" value="0.15" step="0.01" onchange="calculateDependentValues()">
+                        <div class="input-unit">Employee meals and refreshments</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Total Monthly Fixed Costs (₹ Lakhs)</label>
+                        <input type="number" id="totalFixedCosts" class="calculated-field" readonly>
+                        <div class="input-unit">Auto-calculated sum of all fixed costs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cost-breakdown">
+                <h3>📊 Monthly Financial Summary</h3>
+                <div class="cost-item">
+                    <span class="cost-label">Raw Material (Cotton):</span>
+                    <span class="cost-value" id="costCotton">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Fixed Operating Costs:</span>
+                    <span class="cost-value" id="costFixed">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Total Monthly Costs:</span>
+                    <span class="cost-value" id="costTotal">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Yarn Revenue:</span>
+                    <span class="cost-value" id="yarnRevenueDisplay">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Wastage Revenue:</span>
+                    <span class="cost-value" id="wastageRevenueDisplay">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Total Monthly Revenue:</span>
+                    <span class="cost-value" id="revenueTotal">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Monthly Profit (Before Investment Interest):</span>
+                    <span class="cost-value" id="profitBeforeInterest">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Monthly Investment Interest:</span>
+                    <span class="cost-value" id="investmentInterestDisplay">₹0 Lakhs</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Final Monthly PNL (After Interest):</span>
+                    <span class="cost-value" id="finalPNL">₹0 Lakhs</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="validateAndSave()">💾 Validate & Save Assumptions</button>
+                <button class="btn btn-secondary" onclick="resetToDefaults()">↩️ Reset to Defaults</button>
+                <button class="btn" onclick="checkCashFlow()">💰 Check Cash Flow Viability</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let projectData = {
+            dailyProduction: 3300,
+            conversionRatio: 0.69,
+            operatingDays: 30,
+            yarnPrice: 310,
+            cottonCostPerCandy: 55000,
+            wastagePrice: 24,
+            priceEscalation: 3,
+            initialInvestment: 6.00,
+            investmentInterestRate: 9.0,
+            loanTenure: 15,
+            loanEMI: 38.00,
+            salaries: 20.00,
+            power: 38.00,
+            packing: 4.00,
+            stores: 5.00,
+            admin: 2.00,
+            canteen: 0.15,
+            dailyCottonReq: 0,
+            monthlyCandys: 0,
+            monthlyYarnProduction: 0,
+            monthlyCottonCost: 0,
+            monthlyYarnRevenue: 0,
+            monthlyWastageRevenue: 0,
+            monthlyRevenue: 0,
+            monthlyInvestmentInterest: 0,
+            totalFixedCosts: 0
+        };
+
+        function calculateDependentValues() {
+            updateProjectDataFromInputs();
+            
+            projectData.dailyCottonReq = projectData.dailyProduction / projectData.conversionRatio;
+            projectData.monthlyYarnProduction = (projectData.dailyProduction * projectData.operatingDays) / 1000;
+            
+            const monthlyCottonKg = projectData.dailyCottonReq * projectData.operatingDays;
+            projectData.monthlyCandys = monthlyCottonKg / 356;
+            projectData.monthlyCottonCost = (projectData.monthlyCandys * projectData.cottonCostPerCandy) / 100000;
+            
+            projectData.monthlyYarnRevenue = (projectData.monthlyYarnProduction * 1000 * projectData.yarnPrice) / 100000;
+            
+            const monthlyProductionKg = projectData.dailyProduction * projectData.operatingDays;
+            projectData.monthlyWastageRevenue = (monthlyProductionKg * projectData.wastagePrice) / 100000;
+            
+            projectData.monthlyRevenue = projectData.monthlyYarnRevenue + projectData.monthlyWastageRevenue;
+            
+            projectData.totalFixedCosts = projectData.loanEMI + projectData.salaries + projectData.power + 
+                                         projectData.packing + projectData.stores + projectData.admin + projectData.canteen;
+            
+            projectData.monthlyInvestmentInterest = (projectData.initialInvestment * 100 * projectData.investmentInterestRate / 100) / 12;
+            
+            document.getElementById('dailyCottonReq').value = projectData.dailyCottonReq.toFixed(1);
+            document.getElementById('monthlyCandys').value = projectData.monthlyCandys.toFixed(0);
+            document.getElementById('monthlyYarnProduction').value = projectData.monthlyYarnProduction.toFixed(1);
+            document.getElementById('monthlyCottonCost').value = projectData.monthlyCottonCost.toFixed(2);
+            document.getElementById('monthlyYarnRevenue').value = projectData.monthlyYarnRevenue.toFixed(2);
+            document.getElementById('monthlyWastageRevenue').value = projectData.monthlyWastageRevenue.toFixed(2);
+            document.getElementById('monthlyRevenue').value = projectData.monthlyRevenue.toFixed(2);
+            document.getElementById('monthlyInvestmentInterest').value = projectData.monthlyInvestmentInterest.toFixed(2);
+            document.getElementById('totalFixedCosts').value = projectData.totalFixedCosts.toFixed(2);
+            
+            updateCostSummary();
+        }
+
+        function updateCostSummary() {
+            const totalMonthlyCosts = projectData.monthlyCottonCost + projectData.totalFixedCosts;
+            const profitBeforeInterest = projectData.monthlyRevenue - totalMonthlyCosts;
+            const finalPNL = profitBeforeInterest - projectData.monthlyInvestmentInterest;
+            
+            document.getElementById('costCotton').textContent = `₹${projectData.monthlyCottonCost.toFixed(2)} Lakhs`;
+            document.getElementById('costFixed').textContent = `₹${projectData.totalFixedCosts.toFixed(2)} Lakhs`;
+            document.getElementById('costTotal').textContent = `₹${totalMonthlyCosts.toFixed(2)} Lakhs`;
+            document.getElementById('yarnRevenueDisplay').textContent = `₹${projectData.monthlyYarnRevenue.toFixed(2)} Lakhs`;
+            document.getElementById('wastageRevenueDisplay').textContent = `₹${projectData.monthlyWastageRevenue.toFixed(2)} Lakhs`;
+            document.getElementById('revenueTotal').textContent = `₹${projectData.monthlyRevenue.toFixed(2)} Lakhs`;
+            document.getElementById('profitBeforeInterest').textContent = `₹${profitBeforeInterest.toFixed(2)} Lakhs`;
+            document.getElementById('investmentInterestDisplay').textContent = `₹${projectData.monthlyInvestmentInterest.toFixed(2)} Lakhs`;
+            document.getElementById('finalPNL').textContent = `₹${finalPNL.toFixed(2)} Lakhs`;
+            
+            const profitBeforeElement = document.getElementById('profitBeforeInterest');
+            const finalPNLElement = document.getElementById('finalPNL');
+            
+            profitBeforeElement.style.color = profitBeforeInterest > 0 ? '#28a745' : '#dc3545';
+            finalPNLElement.style.color = finalPNL > 0 ? '#28a745' : '#dc3545';
+        }
+
+        function updateProjectDataFromInputs() {
+            projectData.dailyProduction = parseFloat(document.getElementById('dailyProduction').value);
+            projectData.conversionRatio = parseFloat(document.getElementById('conversionRatio').value);
+            projectData.operatingDays = parseFloat(document.getElementById('operatingDays').value);
+            projectData.yarnPrice = parseFloat(document.getElementById('yarnPrice').value);
+            projectData.cottonCostPerCandy = parseFloat(document.getElementById('cottonCostPerCandy').value);
+            projectData.wastagePrice = parseFloat(document.getElementById('wastagePrice').value);
+            projectData.priceEscalation = parseFloat(document.getElementById('priceEscalation').value);
+            projectData.initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
+            projectData.investmentInterestRate = parseFloat(document.getElementById('investmentInterestRate').value);
+            projectData.loanTenure = parseFloat(document.getElementById('loanTenure').value);
+            projectData.loanEMI = parseFloat(document.getElementById('loanEMI').value);
+            projectData.salaries = parseFloat(document.getElementById('salaries').value);
+            projectData.power = parseFloat(document.getElementById('power').value);
+            projectData.packing = parseFloat(document.getElementById('packing').value);
+            projectData.stores = parseFloat(document.getElementById('stores').value);
+            projectData.admin = parseFloat(document.getElementById('admin').value);
+            projectData.canteen = parseFloat(document.getElementById('canteen').value);
+        }
+
+        function checkCashFlow() {
+            calculateDependentValues();
+            
+            const month1TotalCosts = projectData.monthlyCottonCost + projectData.totalFixedCosts;
+            const initialInvestmentLakhs = projectData.initialInvestment * 100;
+            const profitBeforeInterest = projectData.monthlyRevenue - month1TotalCosts;
+            const finalMonthlyPNL = profitBeforeInterest - projectData.monthlyInvestmentInterest;
+            
+            let alerts = [];
+            
+            if (initialInvestmentLakhs < month1TotalCosts) {
+                alerts.push({
+                    type: 'danger',
+                    message: `🚨 CASH SHORTAGE ALERT: First month costs (₹${month1TotalCosts.toFixed(2)} lakhs) exceed initial investment (₹${initialInvestmentLakhs} lakhs). Shortfall: ₹${(month1TotalCosts - initialInvestmentLakhs).toFixed(2)} lakhs.`
+                });
+            } else {
+                alerts.push({
+                    type: 'info',
+                    message: `✅ First month funding secured. Remaining cash after month 1: ₹${(initialInvestmentLakhs - month1TotalCosts).toFixed(2)} lakhs.`
+                });
+            }
+            
+            if (profitBeforeInterest <= 0) {
+                alerts.push({
+                    type: 'danger',
+                    message: `🚨 OPERATIONAL LOSS: Monthly costs (₹${month1TotalCosts.toFixed(2)} lakhs) exceed revenue (₹${projectData.monthlyRevenue.toFixed(2)} lakhs). Operational loss: ₹${Math.abs(profitBeforeInterest).toFixed(2)} lakhs.`
+                });
+            } else {
+                alerts.push({
+                    type: 'info',
+                    message: `💰 Positive operational profit: ₹${profitBeforeInterest.toFixed(2)} lakhs before investment interest.`
+                });
+            }
+            
+            if (finalMonthlyPNL <= 0) {
+                alerts.push({
+                    type: 'warning',
+                    message: `⚠️ FINAL PNL NEGATIVE: After ₹${projectData.monthlyInvestmentInterest.toFixed(2)} lakhs investment interest, final loss: ₹${Math.abs(finalMonthlyPNL).toFixed(2)} lakhs.`
+                });
+            } else {
+                alerts.push({
+                    type: 'info',
+                    message: `🎯 Final monthly profit: ₹${finalMonthlyPNL.toFixed(2)} lakhs after all expenses and investment interest.`
+                });
+            }
+            
+            if (projectData.monthlyRevenue < month1TotalCosts) {
+                alerts.push({
+                    type: 'warning',
+                    message: `⚠️ WORKING CAPITAL RISK: Monthly revenue (₹${projectData.monthlyRevenue.toFixed(2)} lakhs) insufficient to fund next month's costs (₹${month1TotalCosts.toFixed(2)} lakhs). Gap: ₹${(month1TotalCosts - projectData.monthlyRevenue).toFixed(2)} lakhs.`
+                });
+            }
+            
+            const wastageContribution = (projectData.monthlyWastageRevenue / projectData.monthlyRevenue) * 100;
+            alerts.push({
+                type: 'info',
+                message: `📊 WASTAGE ANALYSIS: Wastage revenue ₹${projectData.monthlyWastageRevenue.toFixed(2)} lakhs (${wastageContribution.toFixed(1)}%) from total monthly production at ₹${projectData.wastagePrice}/kg.`
+            });
+            
+            displayAlerts(alerts);
+        }
+
+        function displayAlerts(alerts) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = '';
+            
+            alerts.forEach(alert => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${alert.type}`;
+                alertDiv.innerHTML = alert.message;
+                alertContainer.appendChild(alertDiv);
+            });
+        }
+
+        function saveAssumptions() {
+            calculateDependentValues();
+            localStorage.setItem('spinningMillProjectData', JSON.stringify(projectData));
+        }
+
+        function validateAndSave() {
+            calculateDependentValues();
+            
+            const validationMessages = [];
+            
+            if (projectData.dailyProduction < 1000 || projectData.dailyProduction > 10000) {
+                validationMessages.push('⚠️ Daily production seems unusual (normal range: 1,000-10,000 kg/day)');
+            }
+            
+            if (projectData.conversionRatio < 0.5 || projectData.conversionRatio > 0.8) {
+                validationMessages.push('⚠️ Conversion ratio unusual (normal range: 50-80%)');
+            }
+            
+            if (projectData.yarnPrice < 200 || projectData.yarnPrice > 500) {
+                validationMessages.push('⚠️ Yarn price seems unusual (normal range: ₹200-500/kg)');
+            }
+            
+            if (projectData.cottonCostPerCandy < 30000 || projectData.cottonCostPerCandy > 80000) {
+                validationMessages.push('⚠️ Cotton cost unusual (normal range: ₹30,000-80,000/candy)');
+            }
+            
+            const month1Costs = projectData.monthlyCottonCost + projectData.totalFixedCosts;
+            const initialInvestmentLakhs = projectData.initialInvestment * 100;
+            
+            if (initialInvestmentLakhs < month1Costs) {
+                validationMessages.push('🚨 Critical: Initial investment insufficient for first month operations');
+            }
+            
+            saveAssumptions();
+            
+            let alertMessage = '✅ All assumptions validated and saved!\n\n📊 You can now navigate to any analysis page.';
+            let alertType = 'info';
+            
+            if (validationMessages.length > 0) {
+                alertMessage = '⚠️ Validation completed with warnings:\n\n' + validationMessages.join('\n') + '\n\n💾 Data saved successfully.';
+                alertType = 'warning';
+            }
+            
+            displayAlerts([{ type: alertType, message: alertMessage }]);
+            
+            const statusCard = document.querySelector('.status-card');
+            if (validationMessages.length > 0) {
+                statusCard.style.background = 'linear-gradient(135deg, #ffc107 0%, #fd7e14 100%)';
+                statusCard.querySelector('h4').textContent = '⚠️ Validation Completed with Warnings';
+                statusCard.querySelector('p').textContent = 'Some values need attention but data is saved';
+            } else {
+                statusCard.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                statusCard.querySelector('h4').textContent = '✅ All Validations Passed';
+                statusCard.querySelector('p').textContent = 'Ready for comprehensive financial analysis';
+            }
+        }
+
+        function navigateToPage(page) {
+            saveAssumptions();
+            
+            const pageMapping = {
+                'timeline': 'timeline_analysis.html',
+                'revenue': 'revenue_analysis.html',
+                'costs': 'costs_analysis.html',
+                'financing': 'financing_analysis.html',
+                'cashflow': 'cashflow_analysis.html',
+                'dashboard': 'dashboard_analysis.html'
+            };
+            
+            const filename = pageMapping[page];
+            if (filename) {
+                window.location.href = filename;
+            } else {
+                alert(`❌ Page "${page}" not found. Please ensure ${page}_analysis.html exists in the same folder.`);
+            }
+        }
+
+        function resetToDefaults() {
+            document.getElementById('dailyProduction').value = 3300;
+            document.getElementById('conversionRatio').value = 0.69;
+            document.getElementById('operatingDays').value = 30;
+            document.getElementById('yarnPrice').value = 310;
+            document.getElementById('cottonCostPerCandy').value = 55000;
+            document.getElementById('wastagePrice').value = 24;
+            document.getElementById('priceEscalation').value = 3;
+            document.getElementById('initialInvestment').value = 6.00;
+            document.getElementById('investmentInterestRate').value = 9.0;
+            document.getElementById('loanTenure').value = 15;
+            document.getElementById('loanEMI').value = 38.00;
+            document.getElementById('salaries').value = 20.00;
+            document.getElementById('power').value = 38.00;
+            document.getElementById('packing').value = 4.00;
+            document.getElementById('stores').value = 5.00;
+            document.getElementById('admin').value = 2.00;
+            document.getElementById('canteen').value = 0.15;
+            
+            calculateDependentValues();
+            displayAlerts([{ type: 'info', message: '🔄 All values reset to defaults and recalculated.' }]);
+        }
+
+        function loadSavedData() {
+            const savedData = localStorage.getItem('spinningMillProjectData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                document.getElementById('dailyProduction').value = data.dailyProduction || 3300;
+                document.getElementById('conversionRatio').value = data.conversionRatio || 0.69;
+                document.getElementById('operatingDays').value = data.operatingDays || 30;
+                document.getElementById('yarnPrice').value = data.yarnPrice || 310;
+                document.getElementById('cottonCostPerCandy').value = data.cottonCostPerCandy || 55000;
+                document.getElementById('wastagePrice').value = data.wastagePrice || 24;
+                document.getElementById('priceEscalation').value = data.priceEscalation || 3;
+                document.getElementById('initialInvestment').value = data.initialInvestment || 6.00;
+                document.getElementById('investmentInterestRate').value = data.investmentInterestRate || 9.0;
+                document.getElementById('loanTenure').value = data.loanTenure || 15;
+                document.getElementById('loanEMI').value = data.loanEMI || 38.00;
+                document.getElementById('salaries').value = data.salaries || 20.00;
+                document.getElementById('power').value = data.power || 38.00;
+                document.getElementById('packing').value = data.packing || 4.00;
+                document.getElementById('stores').value = data.stores || 5.00;
+                document.getElementById('admin').value = data.admin || 2.00;
+                document.getElementById('canteen').value = data.canteen || 0.15;
+                
+                calculateDependentValues();
+                displayAlerts([{ type: 'info', message: '📂 Previously saved assumptions loaded successfully.' }]);
+            } else {
+                calculateDependentValues();
+                displayAlerts([{ type: 'info', message: '🆕 Welcome! Enter your project assumptions to begin analysis.' }]);
+            }
+        }
+
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'INPUT' && !e.target.readOnly) {
+                calculateDependentValues();
+                clearTimeout(window.autoSaveTimer);
+                window.autoSaveTimer = setTimeout(saveAssumptions, 2000);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+        });
+    </script>
+</body>
+</html>
