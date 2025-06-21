@@ -47,42 +47,69 @@
         
         .navigation {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid #dee2e6;
+        }
+        
+        .nav-header {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
         
         .nav-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
         }
         
         .nav-card {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            padding: 12px 8px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             text-decoration: none;
             color: #2c3e50;
             transition: all 0.3s ease;
-            border-left: 5px solid #007bff;
+            border-left: 4px solid #007bff;
             cursor: pointer;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .nav-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             color: #007bff;
         }
         
+        .nav-card.timeline { border-left-color: #007bff; }
+        .nav-card.revenue { border-left-color: #28a745; }
+        .nav-card.costs { border-left-color: #dc3545; }
+        .nav-card.financing { border-left-color: #ffc107; }
+        .nav-card.dashboard { border-left-color: #17a2b8; }
+        .nav-card.investment { border-left-color: #6f42c1; }
+        
         .nav-card h3 {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            line-height: 1.2;
         }
         
         .nav-card p {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: #6c757d;
+            line-height: 1.3;
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
         }
         
         .main-content {
@@ -237,17 +264,45 @@
             color: #721c24;
         }
         
+        @media (max-width: 1200px) {
+            .nav-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .input-grid {
-                grid-template-columns: 1fr;
+            .nav-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
             
-            .nav-grid {
+            .input-grid {
                 grid-template-columns: 1fr;
             }
             
             .header h1 {
                 font-size: 1.8rem;
+            }
+            
+            .nav-card {
+                min-height: 70px;
+                padding: 10px 6px;
+            }
+            
+            .nav-card h3 {
+                font-size: 0.8rem;
+            }
+            
+            .nav-card p {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
         }
     </style>
@@ -260,27 +315,37 @@
         </div>
         
         <div class="navigation">
-            <h3 style="margin-bottom: 20px; color: #2c3e50;">📊 Navigate to Analysis Pages</h3>
+            <div class="nav-header">📊 Navigate to Analysis Pages</div>
             <div class="nav-grid">
-                <div class="nav-card" onclick="navigateToPage('timeline')">
-                    <h3>📅 24-Month Timeline</h3>
-                    <p>Production schedule and cash flow milestones</p>
+                <div class="nav-card timeline" onclick="navigateToPage('timeline')">
+                    <div class="nav-icon">📅</div>
+                    <h3>Timeline Analysis</h3>
+                    <p>24-month cash flow milestones</p>
                 </div>
-                <div class="nav-card" onclick="navigateToPage('revenue')">
-                    <h3>💰 Revenue Model</h3>
-                    <p>Monthly revenue projections and sales analysis</p>
+                <div class="nav-card revenue" onclick="navigateToPage('revenue')">
+                    <div class="nav-icon">💰</div>
+                    <h3>Revenue Model</h3>
+                    <p>Sales projections & analysis</p>
                 </div>
-                <div class="nav-card" onclick="navigateToPage('costs')">
-                    <h3>📊 Cost Analysis</h3>
-                    <p>Detailed operating costs and expense breakdown</p>
+                <div class="nav-card costs" onclick="navigateToPage('costs')">
+                    <div class="nav-icon">📊</div>
+                    <h3>Cost Analysis</h3>
+                    <p>Operating costs breakdown</p>
                 </div>
-                <div class="nav-card" onclick="navigateToPage('financing')">
-                    <h3>🏦 Financing & Cash Flow</h3>
-                    <p>Working capital management and cash analysis</p>
+                <div class="nav-card financing" onclick="navigateToPage('financing')">
+                    <div class="nav-icon">🏦</div>
+                    <h3>Financing</h3>
+                    <p>Working capital & cash flow</p>
                 </div>
-                <div class="nav-card" onclick="navigateToPage('dashboard')">
-                    <h3>🎯 Executive Dashboard</h3>
-                    <p>Key performance indicators and summary metrics</p>
+                <div class="nav-card dashboard" onclick="navigateToPage('dashboard')">
+                    <div class="nav-icon">🎯</div>
+                    <h3>Dashboard</h3>
+                    <p>KPIs & summary metrics</p>
+                </div>
+                <div class="nav-card investment" onclick="navigateToPage('investment')">
+                    <div class="nav-icon">💎</div>
+                    <h3>Investment Evaluation</h3>
+                    <p>Decision framework & ROI</p>
                 </div>
             </div>
         </div>
@@ -742,7 +807,8 @@
                 'costs': 'costs_analysis.html',
                 'financing': 'financing_analysis.html',
                 'cashflow': 'cashflow_analysis.html',
-                'dashboard': 'dashboard_analysis.html'
+                'dashboard': 'dashboard_analysis.html',
+                'investment': 'investment_evaluation.html'
             };
             
             const filename = pageMapping[page];

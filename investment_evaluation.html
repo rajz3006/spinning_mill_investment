@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Evaluation - Spinning Mill Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .evaluation-badge {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .badge-excellent {
+            background: #28a745;
+        }
+        
+        .badge-good {
+            background: #20c997;
+        }
+        
+        .badge-caution {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .badge-poor {
+            background: #dc3545;
+        }
+        
+        .navigation-bar {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .data-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .icon-assessment {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .icon-profitability {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .icon-investment {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .icon-cashflow {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .icon-sensitivity {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .icon-breakeven {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+        
+        .icon-risk {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .quick-assessment {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .assessment-card {
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .assessment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .card-excellent {
+            background: #f0fff4;
+            border-left-color: #28a745;
+        }
+        
+        .card-good {
+            background: #f8f9fa;
+            border-left-color: #20c997;
+        }
+        
+        .card-caution {
+            background: #fffbf0;
+            border-left-color: #ffc107;
+        }
+        
+        .card-poor {
+            background: #fff5f5;
+            border-left-color: #dc3545;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .card-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .card-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+        
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .scenario-table {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .number {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .risk-item {
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .risk-high {
+            background: #fff5f5;
+            border-left-color: #dc3545;
+        }
+        
+        .risk-medium {
+            background: #fffbf0;
+            border-left-color: #ffc107;
+        }
+        
+        .risk-low {
+            background: #f0fff4;
+            border-left-color: #28a745;
+        }
+        
+        .risk-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .risk-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .decision-summary {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #007bff;
+            margin-top: 30px;
+        }
+        
+        .decision-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .decision-content {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .recommendation {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .rec-proceed {
+            background: #28a745;
+            color: white;
+        }
+        
+        .rec-caution {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .rec-reject {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .rec-modify {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .alert {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .error-alert {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .warning-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .quick-assessment {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .risk-matrix {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .evaluation-badge {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="evaluation-badge" id="overallBadge">
+                Calculating...
+            </div>
+            <h1>Investment Evaluation</h1>
+            <p>Comprehensive Investment Decision Framework Analysis</p>
+        </div>
+        
+        <div class="navigation-bar">
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+            <div class="data-status">
+                <span class="status-indicator" id="dataStatus"></span>
+                <span id="dataStatusText">Data Connected</span>
+            </div>
+            <button class="back-btn export-btn" onclick="exportToCSV()">📊 Export Evaluation Report</button>
+        </div>
+        
+        <div class="main-content">
+            <div id="alertContainer"></div>
+            
+            <!-- 1. Initial Assessment -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-assessment">🎯</div>
+                    1. Initial Assessment (Quick Glance)
+                </h3>
+                <div class="quick-assessment">
+                    <div class="assessment-card" id="operationalCard">
+                        <div class="card-title">Operational Profitability</div>
+                        <div class="card-value" id="operationalProfit">₹0</div>
+                        <div class="card-description">Monthly profit before investment interest. Core business viability indicator.</div>
+                    </div>
+                    <div class="assessment-card" id="finalPnlCard">
+                        <div class="card-title">Final Monthly PNL</div>
+                        <div class="card-value" id="finalPnl">₹0</div>
+                        <div class="card-description">Bottom-line monthly profit after all expenses including investment interest.</div>
+                    </div>
+                    <div class="assessment-card" id="roiCard">
+                        <div class="card-title">Monthly ROI</div>
+                        <div class="card-value" id="monthlyRoi">0%</div>
+                        <div class="card-description">Return on investment per month. Higher is better for quick payback.</div>
+                    </div>
+                    <div class="assessment-card" id="paybackCard">
+                        <div class="card-title">Payback Period</div>
+                        <div class="card-value" id="paybackPeriod">0</div>
+                        <div class="card-description">Months to recover initial investment. Lower is better.</div>
+                    </div>
+                </div>
+                <div id="quickDecisionRule"></div>
+            </div>
+
+            <!-- 2. Detailed Profitability Analysis -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-profitability">💰</div>
+                    2. Detailed Profitability Analysis
+                </h3>
+                
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">2.1 Revenue Analysis</h4>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="yarnRevenue">₹0</div>
+                        <div class="metric-label">Monthly Yarn Revenue (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="wastageRevenue">₹0</div>
+                        <div class="metric-label">Monthly Wastage Revenue (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="totalRevenue">₹0</div>
+                        <div class="metric-label">Total Monthly Revenue (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="revenuePerKg">₹0</div>
+                        <div class="metric-label">Revenue per KG Produced</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">2.2 Cost Analysis</h4>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="cottonCost">₹0</div>
+                        <div class="metric-label">Monthly Cotton Cost (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="fixedCosts">₹0</div>
+                        <div class="metric-label">Fixed Operating Costs (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="totalCosts">₹0</div>
+                        <div class="metric-label">Total Monthly Costs (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="costPerKg">₹0</div>
+                        <div class="metric-label">Cost per KG Produced</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">2.3 Margin Analysis</h4>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="grossMargin">0%</div>
+                        <div class="metric-label">Gross Profit Margin (Cotton to Yarn)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="operatingMargin">0%</div>
+                        <div class="metric-label">Operating Profit Margin (OPM)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="netMargin">0%</div>
+                        <div class="metric-label">Net Profit Margin</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="ebitdaMargin">0%</div>
+                        <div class="metric-label">EBITDA Margin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Investment & Financing Assessment -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-investment">🏦</div>
+                    3. Investment & Financing Assessment
+                </h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="initialInvestment">₹0</div>
+                        <div class="metric-label">Initial Investment (Crores)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="monthlyInterest">₹0</div>
+                        <div class="metric-label">Monthly Investment Interest (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="loanTenure">0</div>
+                        <div class="metric-label">Loan Tenure (Years)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="debtServiceRatio">0%</div>
+                        <div class="metric-label">Debt Service Coverage Ratio</div>
+                    </div>
+                </div>
+                <div id="investmentAssessment"></div>
+            </div>
+
+            <!-- 4. Cash Flow & Liquidity Analysis -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-cashflow">💸</div>
+                    4. Cash Flow & Liquidity Analysis
+                </h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="initialCashReq">₹0</div>
+                        <div class="metric-label">Initial Cash Requirement (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="workingCapitalGap">₹0</div>
+                        <div class="metric-label">Working Capital Gap (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="cashBuffer">₹0</div>
+                        <div class="metric-label">Recommended Cash Buffer (Lakhs)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="breakEvenMonth">0</div>
+                        <div class="metric-label">Break-even Month</div>
+                    </div>
+                </div>
+                <div id="cashFlowAlerts"></div>
+            </div>
+
+            <!-- 5. Sensitivity Analysis & Scenario Planning -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-sensitivity">📊</div>
+                    5. Sensitivity Analysis & Scenario Planning
+                </h3>
+                <div class="scenario-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Cotton Price Change</th>
+                                <th>Yarn Price Change</th>
+                                <th>Production Change</th>
+                                <th>Monthly PNL (₹ Lakhs)</th>
+                                <th>Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scenarioTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. Break-Even Analysis -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-breakeven">⚖️</div>
+                    6. Break-Even Analysis
+                </h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="breakEvenProduction">0</div>
+                        <div class="metric-label">Break-even Production (MT/month)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="breakEvenPrice">₹0</div>
+                        <div class="metric-label">Break-even Yarn Price (₹/kg)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="safetyMargin">0%</div>
+                        <div class="metric-label">Safety Margin (Current vs Break-even)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="utilizationRequired">0%</div>
+                        <div class="metric-label">Capacity Utilization Required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Risk Assessment -->
+            <div class="section">
+                <h3>
+                    <div class="section-icon icon-risk">⚠️</div>
+                    7. Risk Assessment
+                </h3>
+                <div class="risk-matrix" id="riskMatrix">
+                    <!-- Risk items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Investment Decision Summary -->
+            <div class="decision-summary">
+                <div class="decision-title" id="decisionTitle">Investment Decision Recommendation</div>
+                <div class="decision-content" id="decisionContent">
+                    <!-- Decision content will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global project data
+        let projectData = {};
+
+        // Load project data from localStorage
+        function loadProjectData() {
+            const savedData = localStorage.getItem('spinningMillProjectData');
+            if (savedData) {
+                projectData = JSON.parse(savedData);
+                document.getElementById('dataStatus').style.background = '#28a745';
+                document.getElementById('dataStatusText').textContent = 'Data Connected';
+                return true;
+            } else {
+                document.getElementById('dataStatus').style.background = '#dc3545';
+                document.getElementById('dataStatusText').textContent = 'No Data Found';
+                showAlert('No project assumptions found. Please set up your project assumptions first.', 'error');
+                return false;
+            }
+        }
+
+        // Show alert messages
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            let alertClass = '';
+            if (type === 'error') alertClass = 'error-alert';
+            else if (type === 'warning') alertClass = 'warning-alert';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+        }
+
+        // Calculate all metrics
+        function calculateMetrics() {
+            // Basic calculations
+            const monthlyProductionKg = projectData.dailyProduction * projectData.operatingDays;
+            const monthlyProductionMT = monthlyProductionKg / 1000;
+            
+            // Revenue calculations
+            const yarnRevenue = (monthlyProductionKg * projectData.yarnPrice) / 100000;
+            const wastageRevenue = (monthlyProductionKg * projectData.wastagePrice) / 100000;
+            const totalRevenue = yarnRevenue + wastageRevenue;
+            const revenuePerKg = (totalRevenue * 100000) / monthlyProductionKg;
+            
+            // Cost calculations
+            const dailyCottonReq = projectData.dailyProduction / projectData.conversionRatio;
+            const monthlyCottonKg = dailyCottonReq * projectData.operatingDays;
+            const monthlyCandys = monthlyCottonKg / 356;
+            const cottonCost = (monthlyCandys * projectData.cottonCostPerCandy) / 100000;
+            const fixedCosts = projectData.totalFixedCosts;
+            const totalCosts = cottonCost + fixedCosts;
+            const costPerKg = (totalCosts * 100000) / monthlyProductionKg;
+            
+            // Investment calculations
+            const monthlyInterest = (projectData.initialInvestment * 100 * projectData.investmentInterestRate / 100) / 12;
+            
+            // Profitability calculations
+            const operationalProfit = totalRevenue - totalCosts;
+            const finalPnl = operationalProfit - monthlyInterest;
+            const monthlyRoi = (finalPnl / (projectData.initialInvestment * 100)) * 100;
+            const paybackPeriod = finalPnl > 0 ? (projectData.initialInvestment * 100) / finalPnl : 999;
+            
+            // Margin calculations
+            const grossMargin = ((yarnRevenue - cottonCost) / yarnRevenue) * 100;
+            const operatingMargin = (operationalProfit / totalRevenue) * 100;
+            const netMargin = (finalPnl / totalRevenue) * 100;
+            const ebitdaMargin = operatingMargin; // Simplified as we don't have depreciation
+            
+            // Cash flow calculations
+            const initialCashReq = projectData.initialInvestment * 100;
+            const workingCapitalGap = Math.max(0, totalCosts - totalRevenue);
+            const cashBuffer = totalCosts * 2; // 2 months of operating costs
+            
+            // Break-even calculations
+            const fixedCostsWithInterest = fixedCosts + monthlyInterest;
+            const contributionPerKg = revenuePerKg - (cottonCost * 100000 / monthlyProductionKg);
+            const breakEvenProductionKg = (fixedCostsWithInterest * 100000) / contributionPerKg;
+            const breakEvenProductionMT = breakEvenProductionKg / 1000;
+            const breakEvenPrice = (totalCosts * 100000 + monthlyInterest * 100000) / monthlyProductionKg;
+            const safetyMargin = ((revenuePerKg - breakEvenPrice) / revenuePerKg) * 100;
+            const utilizationRequired = (breakEvenProductionKg / (projectData.dailyProduction * projectData.operatingDays)) * 100;
+            
+            // Debt service coverage
+            const debtServiceRatio = (operationalProfit / monthlyInterest) * 100;
+            
+            return {
+                yarnRevenue,
+                wastageRevenue,
+                totalRevenue,
+                revenuePerKg,
+                cottonCost,
+                fixedCosts,
+                totalCosts,
+                costPerKg,
+                monthlyInterest,
+                operationalProfit,
+                finalPnl,
+                monthlyRoi,
+                paybackPeriod,
+                grossMargin,
+                operatingMargin,
+                netMargin,
+                ebitdaMargin,
+                initialCashReq,
+                workingCapitalGap,
+                cashBuffer,
+                breakEvenProductionMT,
+                breakEvenPrice,
+                safetyMargin,
+                utilizationRequired,
+                debtServiceRatio,
+                monthlyProductionMT
+            };
+        }
+
+        // Update initial assessment
+        function updateInitialAssessment(metrics) {
+            // Update values
+            document.getElementById('operationalProfit').textContent = `₹${metrics.operationalProfit.toFixed(2)}L`;
+            document.getElementById('finalPnl').textContent = `₹${metrics.finalPnl.toFixed(2)}L`;
+            document.getElementById('monthlyRoi').textContent = `${metrics.monthlyRoi.toFixed(2)}%`;
+            document.getElementById('paybackPeriod').textContent = metrics.paybackPeriod < 999 ? `${metrics.paybackPeriod.toFixed(1)} Months` : 'Never';
+            
+            // Style cards based on performance
+            const operationalCard = document.getElementById('operationalCard');
+            const finalPnlCard = document.getElementById('finalPnlCard');
+            const roiCard = document.getElementById('roiCard');
+            const paybackCard = document.getElementById('paybackCard');
+            
+            // Operational Profit Card
+            if (metrics.operationalProfit > 50) {
+                operationalCard.className = 'assessment-card card-excellent';
+            } else if (metrics.operationalProfit > 20) {
+                operationalCard.className = 'assessment-card card-good';
+            } else if (metrics.operationalProfit > 0) {
+                operationalCard.className = 'assessment-card card-caution';
+            } else {
+                operationalCard.className = 'assessment-card card-poor';
+            }
+            
+            // Final PNL Card
+            if (metrics.finalPnl > 30) {
+                finalPnlCard.className = 'assessment-card card-excellent';
+            } else if (metrics.finalPnl > 10) {
+                finalPnlCard.className = 'assessment-card card-good';
+            } else if (metrics.finalPnl > 0) {
+                finalPnlCard.className = 'assessment-card card-caution';
+            } else {
+                finalPnlCard.className = 'assessment-card card-poor';
+            }
+            
+            // ROI Card
+            if (metrics.monthlyRoi > 3) {
+                roiCard.className = 'assessment-card card-excellent';
+            } else if (metrics.monthlyRoi > 1.5) {
+                roiCard.className = 'assessment-card card-good';
+            } else if (metrics.monthlyRoi > 0) {
+                roiCard.className = 'assessment-card card-caution';
+            } else {
+                roiCard.className = 'assessment-card card-poor';
+            }
+            
+            // Payback Card
+            if (metrics.paybackPeriod < 24) {
+                paybackCard.className = 'assessment-card card-excellent';
+            } else if (metrics.paybackPeriod < 36) {
+                paybackCard.className = 'assessment-card card-good';
+            } else if (metrics.paybackPeriod < 60) {
+                paybackCard.className = 'assessment-card card-caution';
+            } else {
+                paybackCard.className = 'assessment-card card-poor';
+            }
+            
+            // Quick decision rule
+            let decisionRule = '';
+            if (metrics.finalPnl <= 0) {
+                decisionRule = `
+                    <div style="background: #fff5f5; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545; margin-top: 20px;">
+                        <h4 style="color: #dc3545; margin-bottom: 10px;">🚨 CRITICAL ALERT</h4>
+                        <p style="color: #721c24;">Final PNL is negative (₹${metrics.finalPnl.toFixed(2)}L). This project is not viable under current assumptions and requires significant adjustments.</p>
+                    </div>
+                `;
+            } else if (metrics.operationalProfit <= 0) {
+                decisionRule = `
+                    <div style="background: #fffbf0; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107; margin-top: 20px;">
+                        <h4 style="color: #856404; margin-bottom: 10px;">⚠️ OPERATIONAL CONCERN</h4>
+                        <p style="color: #856404;">Operational profit is negative (₹${metrics.operationalProfit.toFixed(2)}L). The core business model needs re-evaluation.</p>
+                    </div>
+                `;
+            } else {
+                decisionRule = `
+                    <div style="background: #f0fff4; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; margin-top: 20px;">
+                        <h4 style="color: #28a745; margin-bottom: 10px;">✅ POSITIVE INDICATORS</h4>
+                        <p style="color: #155724;">Both operational and final PNL are positive. Project shows potential viability. Proceed with detailed analysis.</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('quickDecisionRule').innerHTML = decisionRule;
+        }
+
+        // Update detailed profitability analysis
+        function updateProfitabilityAnalysis(metrics) {
+            // Revenue metrics
+            document.getElementById('yarnRevenue').textContent = `₹${metrics.yarnRevenue.toFixed(2)}`;
+            document.getElementById('wastageRevenue').textContent = `₹${metrics.wastageRevenue.toFixed(2)}`;
+            document.getElementById('totalRevenue').textContent = `₹${metrics.totalRevenue.toFixed(2)}`;
+            document.getElementById('revenuePerKg').textContent = `₹${metrics.revenuePerKg.toFixed(2)}`;
+            
+            // Cost metrics
+            document.getElementById('cottonCost').textContent = `₹${metrics.cottonCost.toFixed(2)}`;
+            document.getElementById('fixedCosts').textContent = `₹${metrics.fixedCosts.toFixed(2)}`;
+            document.getElementById('totalCosts').textContent = `₹${metrics.totalCosts.toFixed(2)}`;
+            document.getElementById('costPerKg').textContent = `₹${metrics.costPerKg.toFixed(2)}`;
+            
+            // Margin metrics
+            document.getElementById('grossMargin').textContent = `${metrics.grossMargin.toFixed(1)}%`;
+            document.getElementById('operatingMargin').textContent = `${metrics.operatingMargin.toFixed(1)}%`;
+            document.getElementById('netMargin').textContent = `${metrics.netMargin.toFixed(1)}%`;
+            document.getElementById('ebitdaMargin').textContent = `${metrics.ebitdaMargin.toFixed(1)}%`;
+        }
+
+        // Update investment assessment
+        function updateInvestmentAssessment(metrics) {
+            document.getElementById('initialInvestment').textContent = `₹${projectData.initialInvestment.toFixed(2)}`;
+            document.getElementById('monthlyInterest').textContent = `₹${metrics.monthlyInterest.toFixed(2)}`;
+            document.getElementById('loanTenure').textContent = `${projectData.loanTenure}`;
+            document.getElementById('debtServiceRatio').textContent = `${metrics.debtServiceRatio.toFixed(1)}%`;
+            
+            let assessmentContent = '';
+            if (metrics.initialCashReq < metrics.totalCosts) {
+                assessmentContent += `
+                    <div style="background: #fff5f5; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #dc3545;">
+                        <strong>⚠️ Insufficient Initial Investment:</strong> Initial investment (₹${metrics.initialCashReq}L) may be insufficient to cover first month costs (₹${metrics.totalCosts.toFixed(2)}L).
+                    </div>
+                `;
+            }
+            
+            if (metrics.debtServiceRatio < 150) {
+                assessmentContent += `
+                    <div style="background: #fffbf0; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
+                        <strong>💰 Tight Debt Coverage:</strong> Debt service coverage ratio (${metrics.debtServiceRatio.toFixed(1)}%) is below ideal 150%. Consider extending loan tenure or reducing interest burden.
+                    </div>
+                `;
+            }
+            
+            document.getElementById('investmentAssessment').innerHTML = assessmentContent;
+        }
+
+        // Update cash flow analysis
+        function updateCashFlowAnalysis(metrics) {
+            document.getElementById('initialCashReq').textContent = `₹${metrics.initialCashReq.toFixed(0)}`;
+            document.getElementById('workingCapitalGap').textContent = `₹${metrics.workingCapitalGap.toFixed(2)}`;
+            document.getElementById('cashBuffer').textContent = `₹${metrics.cashBuffer.toFixed(0)}`;
+            
+            // Calculate break-even month
+            let breakEvenMonth = 'Never';
+            if (metrics.finalPnl > 0) {
+                const monthsToBreakEven = Math.ceil(metrics.initialCashReq / metrics.finalPnl);
+                breakEvenMonth = monthsToBreakEven <= 60 ? monthsToBreakEven.toString() : '60+';
+            }
+            document.getElementById('breakEvenMonth').textContent = breakEvenMonth;
+            
+            // Cash flow alerts
+            let alerts = '';
+            if (metrics.initialCashReq < metrics.totalCosts) {
+                alerts += `
+                    <div style="background: #fff5f5; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #dc3545;">
+                        <strong>🚨 Cash Shortage Alert:</strong> First month costs exceed initial investment. Additional funding required.
+                    </div>
+                `;
+            }
+            
+            if (metrics.workingCapitalGap > 0) {
+                alerts += `
+                    <div style="background: #fffbf0; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
+                        <strong>💸 Working Capital Risk:</strong> Monthly revenue insufficient to fund next month's costs. Gap: ₹${metrics.workingCapitalGap.toFixed(2)}L
+                    </div>
+                `;
+            }
+            
+            if (metrics.initialCashReq < metrics.cashBuffer) {
+                alerts += `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
+                        <strong>💰 Insufficient Buffer:</strong> Consider maintaining ₹${metrics.cashBuffer.toFixed(0)}L as cash buffer (2 months operating costs).
+                    </div>
+                `;
+            }
+            
+            document.getElementById('cashFlowAlerts').innerHTML = alerts;
+        }
+
+        // Calculate scenario PNL
+        function calculateScenarioPNL(cottonChange, yarnChange, prodChange, baseMetrics) {
+            const newCottonPrice = projectData.cottonCostPerCandy * (1 + cottonChange / 100);
+            const newYarnPrice = projectData.yarnPrice * (1 + yarnChange / 100);
+            const newProduction = projectData.dailyProduction * (1 + prodChange / 100);
+            
+            // Recalculate with new values
+            const newMonthlyProdKg = newProduction * projectData.operatingDays;
+            const newYarnRevenue = (newMonthlyProdKg * newYarnPrice) / 100000;
+            const newWastageRevenue = (newMonthlyProdKg * projectData.wastagePrice) / 100000;
+            const newTotalRevenue = newYarnRevenue + newWastageRevenue;
+            
+            const newDailyCottonReq = newProduction / projectData.conversionRatio;
+            const newMonthlyCottonKg = newDailyCottonReq * projectData.operatingDays;
+            const newMonthlyCandys = newMonthlyCottonKg / 356;
+            const newCottonCost = (newMonthlyCandys * newCottonPrice) / 100000;
+            
+            const newTotalCosts = newCottonCost + baseMetrics.fixedCosts;
+            const newOperationalProfit = newTotalRevenue - newTotalCosts;
+            const newFinalPnl = newOperationalProfit - baseMetrics.monthlyInterest;
+            
+            return newFinalPnl;
+        }
+
+        // Update user input scenario
+        function updateUserScenario() {
+            const metrics = calculateMetrics();
+            const cottonChange = parseFloat(document.getElementById('userCottonChange').value) || 0;
+            const yarnChange = parseFloat(document.getElementById('userYarnChange').value) || 0;
+            const prodChange = parseFloat(document.getElementById('userProdChange').value) || 0;
+            
+            const newPnl = calculateScenarioPNL(cottonChange, yarnChange, prodChange, metrics);
+            const impact = newPnl - metrics.finalPnl;
+            
+            // Update display
+            document.getElementById('userPnlResult').textContent = `₹${newPnl.toFixed(2)}`;
+            document.getElementById('userPnlResult').className = `number ${newPnl >= 0 ? 'positive' : 'negative'}`;
+            
+            document.getElementById('userImpactResult').textContent = `${impact > 0 ? '+' : ''}₹${impact.toFixed(2)}`;
+            document.getElementById('userImpactResult').className = `number ${impact > 0 ? 'positive' : impact < 0 ? 'negative' : ''}`;
+        }
+
+        // Generate scenario analysis
+        function generateScenarioAnalysis(metrics) {
+            const scenarios = [
+                { name: 'Base Case', cottonChange: 0, yarnChange: 0, prodChange: 0 },
+                { name: 'Optimistic', cottonChange: -10, yarnChange: 10, prodChange: 5 },
+                { name: 'Pessimistic', cottonChange: 15, yarnChange: -10, prodChange: -5 },
+                { name: 'Cotton Price Spike', cottonChange: 20, yarnChange: 0, prodChange: 0 },
+                { name: 'Market Downturn', cottonChange: 10, yarnChange: -15, prodChange: 0 },
+                { name: 'Efficiency Gain', cottonChange: 0, yarnChange: 0, prodChange: 10 }
+            ];
+            
+            const tableBody = document.getElementById('scenarioTable');
+            tableBody.innerHTML = '';
+            
+            // Add predefined scenarios
+            scenarios.forEach(scenario => {
+                const newFinalPnl = calculateScenarioPNL(scenario.cottonChange, scenario.yarnChange, scenario.prodChange, metrics);
+                const impact = newFinalPnl - metrics.finalPnl;
+                const impactClass = impact > 0 ? 'positive' : impact < 0 ? 'negative' : '';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${scenario.name}</strong></td>
+                    <td class="number">${scenario.cottonChange > 0 ? '+' : ''}${scenario.cottonChange}%</td>
+                    <td class="number">${scenario.yarnChange > 0 ? '+' : ''}${scenario.yarnChange}%</td>
+                    <td class="number">${scenario.prodChange > 0 ? '+' : ''}${scenario.prodChange}%</td>
+                    <td class="number ${newFinalPnl >= 0 ? 'positive' : 'negative'}">₹${newFinalPnl.toFixed(2)}</td>
+                    <td class="number ${impactClass}">${impact > 0 ? '+' : ''}₹${impact.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add separator row
+            const separatorRow = document.createElement('tr');
+            separatorRow.innerHTML = `
+                <td colspan="6" style="background: #e9ecef; text-align: center; font-weight: 600; padding: 8px;">
+                    👆 Predefined Scenarios | 👇 Your Custom Scenario
+                </td>
+            `;
+            tableBody.appendChild(separatorRow);
+            
+            // Add user input row
+            const userRow = document.createElement('tr');
+            userRow.style.background = '#f8f9fa';
+            userRow.style.border = '2px solid #007bff';
+            userRow.innerHTML = `
+                <td><strong style="color: #007bff;">🔧 Your Scenario</strong></td>
+                <td style="padding: 8px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <input type="number" id="userCottonChange" 
+                               style="width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" 
+                               placeholder="0" step="0.1" oninput="updateUserScenario()">
+                        <span style="font-size: 0.8rem;">%</span>
+                    </div>
+                </td>
+                <td style="padding: 8px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <input type="number" id="userYarnChange" 
+                               style="width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" 
+                               placeholder="0" step="0.1" oninput="updateUserScenario()">
+                        <span style="font-size: 0.8rem;">%</span>
+                    </div>
+                </td>
+                <td style="padding: 8px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <input type="number" id="userProdChange" 
+                               style="width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" 
+                               placeholder="0" step="0.1" oninput="updateUserScenario()">
+                        <span style="font-size: 0.8rem;">%</span>
+                    </div>
+                </td>
+                <td class="number" id="userPnlResult" style="font-weight: 700;">₹${metrics.finalPnl.toFixed(2)}</td>
+                <td class="number" id="userImpactResult" style="font-weight: 700;">₹0.00</td>
+            `;
+            tableBody.appendChild(userRow);
+            
+            // Add instruction row
+            const instructionRow = document.createElement('tr');
+            instructionRow.innerHTML = `
+                <td colspan="6" style="background: #e3f2fd; text-align: center; font-style: italic; padding: 10px; color: #1565c0;">
+                    💡 Enter percentage changes in the blue row above to see real-time impact on your monthly PNL. 
+                    Positive values = increase, Negative values = decrease.
+                </td>
+            `;
+            tableBody.appendChild(instructionRow);
+        }
+
+        // Update break-even analysis
+        function updateBreakEvenAnalysis(metrics) {
+            document.getElementById('breakEvenProduction').textContent = `${metrics.breakEvenProductionMT.toFixed(1)}`;
+            document.getElementById('breakEvenPrice').textContent = `₹${metrics.breakEvenPrice.toFixed(2)}`;
+            document.getElementById('safetyMargin').textContent = `${metrics.safetyMargin.toFixed(1)}%`;
+            document.getElementById('utilizationRequired').textContent = `${metrics.utilizationRequired.toFixed(1)}%`;
+        }
+
+        // Generate risk assessment
+        function generateRiskAssessment(metrics) {
+            const risks = [
+                {
+                    title: 'Raw Material Price Volatility',
+                    description: `Cotton represents ${((metrics.cottonCost / metrics.totalCosts) * 100).toFixed(1)}% of total costs. Price fluctuations significantly impact profitability.`,
+                    level: metrics.cottonCost / metrics.totalCosts > 0.6 ? 'high' : 'medium'
+                },
+                {
+                    title: 'Market Demand Risk',
+                    description: 'Yarn market demand fluctuations and competition from larger mills could affect sales prices and volumes.',
+                    level: metrics.safetyMargin < 20 ? 'high' : metrics.safetyMargin < 40 ? 'medium' : 'low'
+                },
+                {
+                    title: 'Operational Efficiency Risk',
+                    description: `Production efficiency and conversion ratio (${projectData.conversionRatio}) directly impact costs. Machinery breakdowns could reduce output.`,
+                    level: metrics.utilizationRequired > 90 ? 'high' : 'medium'
+                },
+                {
+                    title: 'Financial Leverage Risk',
+                    description: `Monthly interest burden (₹${metrics.monthlyInterest.toFixed(2)}L) represents significant fixed cost. Interest rate changes affect profitability.`,
+                    level: metrics.debtServiceRatio < 150 ? 'high' : metrics.debtServiceRatio < 250 ? 'medium' : 'low'
+                },
+                {
+                    title: 'Working Capital Risk',
+                    description: metrics.workingCapitalGap > 0 ? `Working capital gap of ₹${metrics.workingCapitalGap.toFixed(2)}L requires external funding.` : 'Working capital adequately managed through operations.',
+                    level: metrics.workingCapitalGap > 20 ? 'high' : metrics.workingCapitalGap > 0 ? 'medium' : 'low'
+                },
+                {
+                    title: 'Economic Downturn Risk',
+                    description: 'Broader economic conditions affecting textile industry demand and input costs.',
+                    level: metrics.netMargin < 5 ? 'high' : metrics.netMargin < 15 ? 'medium' : 'low'
+                }
+            ];
+            
+            const riskMatrix = document.getElementById('riskMatrix');
+            riskMatrix.innerHTML = '';
+            
+            risks.forEach(risk => {
+                const riskDiv = document.createElement('div');
+                riskDiv.className = `risk-item risk-${risk.level}`;
+                riskDiv.innerHTML = `
+                    <div class="risk-title">${risk.title} (${risk.level.toUpperCase()} RISK)</div>
+                    <div class="risk-description">${risk.description}</div>
+                `;
+                riskMatrix.appendChild(riskDiv);
+            });
+        }
+
+        // Generate overall investment decision
+        function generateInvestmentDecision(metrics) {
+            let score = 0;
+            let factors = [];
+            
+            // Scoring factors
+            if (metrics.finalPnl > 30) {
+                score += 25;
+                factors.push('Strong monthly profitability');
+            } else if (metrics.finalPnl > 10) {
+                score += 15;
+                factors.push('Moderate monthly profitability');
+            } else if (metrics.finalPnl > 0) {
+                score += 5;
+                factors.push('Marginal profitability');
+            } else {
+                score -= 20;
+                factors.push('Negative profitability');
+            }
+            
+            if (metrics.monthlyRoi > 3) {
+                score += 20;
+                factors.push('Excellent ROI');
+            } else if (metrics.monthlyRoi > 1.5) {
+                score += 10;
+                factors.push('Good ROI');
+            } else if (metrics.monthlyRoi > 0) {
+                score += 5;
+                factors.push('Positive ROI');
+            }
+            
+            if (metrics.paybackPeriod < 24) {
+                score += 15;
+                factors.push('Quick payback period');
+            } else if (metrics.paybackPeriod < 36) {
+                score += 10;
+                factors.push('Reasonable payback period');
+            }
+            
+            if (metrics.safetyMargin > 30) {
+                score += 15;
+                factors.push('High safety margin');
+            } else if (metrics.safetyMargin > 15) {
+                score += 10;
+                factors.push('Adequate safety margin');
+            }
+            
+            if (metrics.workingCapitalGap <= 0) {
+                score += 10;
+                factors.push('Self-sufficient working capital');
+            } else {
+                score -= 10;
+                factors.push('Working capital dependency');
+            }
+            
+            if (metrics.debtServiceRatio > 200) {
+                score += 10;
+                factors.push('Strong debt coverage');
+            } else if (metrics.debtServiceRatio > 150) {
+                score += 5;
+                factors.push('Adequate debt coverage');
+            }
+            
+            // Determine recommendation
+            let recommendation, badgeClass, badgeText, decisionContent;
+            
+            if (score >= 70) {
+                recommendation = 'PROCEED WITH INVESTMENT';
+                badgeClass = 'badge-excellent';
+                badgeText = 'EXCELLENT INVESTMENT';
+                decisionContent = `
+                    <div style="color: #28a745; font-weight: 600; margin-bottom: 15px;">
+                        🎯 STRONG RECOMMENDATION: PROCEED WITH INVESTMENT
+                    </div>
+                    <p style="margin-bottom: 15px;">
+                        This investment shows excellent financial metrics across all key parameters. 
+                        The project demonstrates strong profitability, quick payback, and manageable risks.
+                    </p>
+                    <div style="margin: 15px 0;">
+                        <strong>Key Strengths:</strong> ${factors.slice(0, 3).join(', ')}
+                    </div>
+                    <a href="#" class="recommendation rec-proceed">✅ Proceed with Investment</a>
+                `;
+            } else if (score >= 40) {
+                recommendation = 'PROCEED WITH CAUTION';
+                badgeClass = 'badge-good';
+                badgeText = 'VIABLE INVESTMENT';
+                decisionContent = `
+                    <div style="color: #20c997; font-weight: 600; margin-bottom: 15px;">
+                        ✅ CONDITIONAL RECOMMENDATION: PROCEED WITH CAUTION
+                    </div>
+                    <p style="margin-bottom: 15px;">
+                        This investment shows positive indicators but requires careful monitoring and risk management. 
+                        Consider implementing safeguards and contingency plans.
+                    </p>
+                    <div style="margin: 15px 0;">
+                        <strong>Key Factors:</strong> ${factors.slice(0, 4).join(', ')}
+                    </div>
+                    <a href="#" class="recommendation rec-caution">⚠️ Proceed with Caution</a>
+                    <a href="#" class="recommendation rec-modify">🔧 Modify Parameters</a>
+                `;
+            } else if (score >= 10) {
+                recommendation = 'REQUIRES MODIFICATIONS';
+                badgeClass = 'badge-caution';
+                badgeText = 'NEEDS IMPROVEMENT';
+                decisionContent = `
+                    <div style="color: #856404; font-weight: 600; margin-bottom: 15px;">
+                        🔧 CONDITIONAL RECOMMENDATION: REQUIRES MODIFICATIONS
+                    </div>
+                    <p style="margin-bottom: 15px;">
+                        This investment has potential but requires significant improvements in key metrics. 
+                        Consider adjusting assumptions, reducing costs, or improving pricing before proceeding.
+                    </p>
+                    <div style="margin: 15px 0;">
+                        <strong>Areas for Improvement:</strong> ${factors.filter(f => f.includes('Negative') || f.includes('dependency') || f.includes('Marginal')).join(', ')}
+                    </div>
+                    <a href="#" class="recommendation rec-modify">🔧 Modify Project Parameters</a>
+                    <a href="#" class="recommendation rec-caution">⚠️ Re-evaluate After Changes</a>
+                `;
+            } else {
+                recommendation = 'NOT RECOMMENDED';
+                badgeClass = 'badge-poor';
+                badgeText = 'HIGH RISK INVESTMENT';
+                decisionContent = `
+                    <div style="color: #dc3545; font-weight: 600; margin-bottom: 15px;">
+                        ❌ NOT RECOMMENDED: HIGH RISK INVESTMENT
+                    </div>
+                    <p style="margin-bottom: 15px;">
+                        This investment shows significant financial risks and poor returns. 
+                        Consider alternative investments or major restructuring of the project.
+                    </p>
+                    <div style="margin: 15px 0;">
+                        <strong>Major Concerns:</strong> ${factors.filter(f => f.includes('Negative') || f.includes('dependency')).join(', ')}
+                    </div>
+                    <a href="#" class="recommendation rec-reject">❌ Do Not Proceed</a>
+                    <a href="#" class="recommendation rec-modify">🔧 Major Restructuring Required</a>
+                `;
+            }
+            
+            // Update badge and decision content
+            const badge = document.getElementById('overallBadge');
+            badge.className = `evaluation-badge ${badgeClass}`;
+            badge.textContent = badgeText;
+            
+            document.getElementById('decisionTitle').textContent = `Investment Decision: ${recommendation}`;
+            document.getElementById('decisionContent').innerHTML = decisionContent;
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const metrics = calculateMetrics();
+            let csv = [];
+            
+            // Title and metadata
+            csv.push(['Spinning Mill Project - Investment Evaluation Report']);
+            csv.push(['Generated on: ' + new Date().toLocaleString()]);
+            csv.push(['']);
+            
+            // Executive Summary
+            csv.push(['EXECUTIVE SUMMARY']);
+            csv.push(['Final Monthly PNL (₹ Lakhs)', metrics.finalPnl.toFixed(2)]);
+            csv.push(['Monthly ROI (%)', metrics.monthlyRoi.toFixed(2)]);
+            csv.push(['Payback Period (Months)', metrics.paybackPeriod < 999 ? metrics.paybackPeriod.toFixed(1) : 'Never']);
+            csv.push(['Operating Margin (%)', metrics.operatingMargin.toFixed(1)]);
+            csv.push(['Safety Margin (%)', metrics.safetyMargin.toFixed(1)]);
+            csv.push(['']);
+            
+            // Financial Metrics
+            csv.push(['FINANCIAL METRICS']);
+            csv.push(['Total Monthly Revenue (₹ Lakhs)', metrics.totalRevenue.toFixed(2)]);
+            csv.push(['Total Monthly Costs (₹ Lakhs)', metrics.totalCosts.toFixed(2)]);
+            csv.push(['Operational Profit (₹ Lakhs)', metrics.operationalProfit.toFixed(2)]);
+            csv.push(['Monthly Interest (₹ Lakhs)', metrics.monthlyInterest.toFixed(2)]);
+            csv.push(['Net Profit Margin (%)', metrics.netMargin.toFixed(1)]);
+            csv.push(['']);
+            
+            // Investment Analysis
+            csv.push(['INVESTMENT ANALYSIS']);
+            csv.push(['Initial Investment (₹ Crores)', projectData.initialInvestment.toFixed(2)]);
+            csv.push(['Break-even Production (MT/month)', metrics.breakEvenProductionMT.toFixed(1)]);
+            csv.push(['Break-even Price (₹/kg)', metrics.breakEvenPrice.toFixed(2)]);
+            csv.push(['Capacity Utilization Required (%)', metrics.utilizationRequired.toFixed(1)]);
+            csv.push(['Debt Service Coverage (%)', metrics.debtServiceRatio.toFixed(1)]);
+            csv.push(['']);
+            
+            // Risk Assessment
+            csv.push(['RISK FACTORS']);
+            csv.push(['Raw Material Cost Share (%)', ((metrics.cottonCost / metrics.totalCosts) * 100).toFixed(1)]);
+            csv.push(['Working Capital Gap (₹ Lakhs)', metrics.workingCapitalGap.toFixed(2)]);
+            csv.push(['Cash Buffer Recommended (₹ Lakhs)', metrics.cashBuffer.toFixed(0)]);
+            
+            // Download CSV
+            const csvContent = csv.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `investment_evaluation_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (loadProjectData()) {
+                const metrics = calculateMetrics();
+                
+                updateInitialAssessment(metrics);
+                updateProfitabilityAnalysis(metrics);
+                updateInvestmentAssessment(metrics);
+                updateCashFlowAnalysis(metrics);
+                generateScenarioAnalysis(metrics);
+                updateBreakEvenAnalysis(metrics);
+                generateRiskAssessment(metrics);
+                generateInvestmentDecision(metrics);
+                
+                showAlert('✅ Investment evaluation completed successfully. Review all sections for comprehensive analysis.', 'info');
+            } else {
+                // Load default values for demonstration
+                projectData = {
+                    dailyProduction: 3300,
+                    conversionRatio: 0.69,
+                    operatingDays: 30,
+                    yarnPrice: 310,
+                    cottonCostPerCandy: 55000,
+                    wastagePrice: 24,
+                    priceEscalation: 3,
+                    initialInvestment: 6.00,
+                    investmentInterestRate: 9.0,
+                    loanTenure: 15,
+                    totalFixedCosts: 107.15
+                };
+                
+                const metrics = calculateMetrics();
+                
+                updateInitialAssessment(metrics);
+                updateProfitabilityAnalysis(metrics);
+                updateInvestmentAssessment(metrics);
+                updateCashFlowAnalysis(metrics);
+                generateScenarioAnalysis(metrics);
+                updateBreakEvenAnalysis(metrics);
+                generateRiskAssessment(metrics);
+                generateInvestmentDecision(metrics);
+                
+                showAlert('⚠️ Using default values for demonstration. Please set up project assumptions for accurate evaluation.', 'warning');
+            }
+        });
+    </script>
+</body>
+</html>
